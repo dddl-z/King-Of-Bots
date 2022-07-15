@@ -32,8 +32,8 @@
 </template>
 
  <script>
- import { useRoute } from 'vue-router'
- import { computed } from 'vue'
+ import { useRoute } from 'vue-router' // 取得当前在哪个页面
+ import { computed } from 'vue' // 实时返回当前 route 的内容
 
  export default {
     setup() {
