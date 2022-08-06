@@ -33,7 +33,12 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="add-bot-code" class="form-label">代码</label>
-                                        <textarea v-model="botadd.content" class="form-control" id="add-bot-code" rows="3" placeholder="请编写Bot代码"></textarea>
+                                        <VAceEditor
+                                            v-model:value="botadd.content"
+                                            @init="editorInit"
+                                            lang="c_cpp"
+                                            theme="textmate"
+                                            style="height: 300px" />
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -81,7 +86,12 @@
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="add-bot-code" class="form-label">代码</label>
-                                                        <textarea v-model="bot.content" class="form-control" id="add-bot-code" rows="3" placeholder="请编写Bot代码"></textarea>
+                                                        <VAceEditor
+                                                            v-model:value="bot.content"
+                                                            @init="editorInit"
+                                                            lang="c_cpp"
+                                                            theme="textmate"
+                                                            style="height: 300px" />
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -108,9 +118,18 @@ import { ref, reactive } from 'vue'
 import $ from 'jquery'
 import { useStore } from 'vuex'
 import { Modal } from 'bootstrap/dist/js/bootstrap'
+import { VAceEditor } from 'vue3-ace-editor';
+import ace from 'ace-builds';
 
 export default {
+    components: {
+        VAceEditor
+    },
     setup() {
+        ace.config.set(
+            "basePath", 
+            "https://cdn.jsdelivr.net/npm/ace-builds@" + require('ace-builds').version + "/src-noconflict/")
+
         const store = useStore();
         let bots = ref([]);
 
@@ -171,16 +190,16 @@ export default {
                 type: "post",
                 data: {
                     bot_id: bot.id,
-                    title: botadd.title,
-                    description: botadd.description,
-                    content: botadd.content,
+                    title: bot.title,
+                    description: bot.description,
+                    content: bot.content,
                 },
                 headers: {
                     Authorization: "Bearer " + store.state.user.token,
                 },
                 success(resp) {
                     if (resp.error_message === "success") {
-                        Modal.getInstance("#add-bot-btn").hide();
+                        Modal.getInstance('#update-bot-modal-' + bot.id).hide();
                         refresh_bots();
                     }
                     else {
