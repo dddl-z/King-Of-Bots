@@ -35,6 +35,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         token = token.substring(7);
 
+        // 判断逻辑
         String userid;
         try {
             Claims claims = JwtUtil.parseJWT(token);
