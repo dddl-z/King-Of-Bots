@@ -72,10 +72,6 @@ export class Snake extends AcGameObject {
         for (let i = k; i > 0; i--) {
             this.cells[i] = JSON.parse(JSON.stringify(this.cells[i - 1])); // 防止出现重复的问题，先转换为 JSON，然后再解析出来，这样就会创建一个新的对象
         }
-
-        if (!this.gamemap.check_valid(this.next_cell)) { // 下一步操作非法，蛇瞬间去世
-            this.status = "die";
-        }
     }
 
     update_move() { // 蛇的移动
