@@ -21,6 +21,8 @@ export default {
         const store = useStore();
         const socketUrl = `ws://localhost:3000/websocket/${store.state.user.token}/`;
 
+        store.commit("updateLoser", "none");
+
         let socket = null;
         onMounted(() => { // 组件被挂载时
             store.commit("updateOpponent", {

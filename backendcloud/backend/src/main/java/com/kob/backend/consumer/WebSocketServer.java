@@ -3,8 +3,10 @@ package com.kob.backend.consumer;
 import com.alibaba.fastjson.JSONObject;
 import com.kob.backend.consumer.utils.Game;
 import com.kob.backend.consumer.utils.JwtAuthentication;
+import com.kob.backend.mapper.BotMapper;
 import com.kob.backend.mapper.RecordMapper;
 import com.kob.backend.mapper.UserMapper;
+import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +29,7 @@ public class WebSocketServer {
     public static final ConcurrentHashMap<Integer, WebSocketServer> users = new ConcurrentHashMap<>(); // 维护连接
     private User user;
     private Session session = null;
-    private Game game = null;
+    public Game game = null;
     private final static String addPlayerUrl = "http://127.0.0.1:3001/player/add/";
     private final static String removePlayerUrl = "http://127.0.0.1:3001/player/remove/";
     private static UserMapper userMapper;
@@ -45,6 +47,12 @@ public class WebSocketServer {
     public void setRestTemplate(RestTemplate restTemplate) {
         WebSocketServer.restTemplate = restTemplate;
     }
+    private static BotMapper botMapper;
+    @Autowired
+    public void setBotMapper(BotMapper botMapper) {
+        WebSocketServer.botMapper = botMapper;
+    }
+
 
     @OnOpen
     public void onOpen(Session session, @PathParam("token") String token) throws IOException { // 建立连接
@@ -75,12 +83,24 @@ public class WebSocketServer {
         }
     }
 
-    public static void startGame(Integer aId, Integer bId) {
+    public static void startGame(Integer aId, Integer aBotId, Integer bId, Integer bBotId) {
         User a = userMapper.selectById(aId);
         User b = userMapper.selectById(bId);
 
+        // 取出对应的bot代码
+        Bot botA = botMapper.selectById(aBotId);
+        Bot botB = botMapper.selectById(bBotId);
+
         // 匹配逻辑
-        Game game = new Game(13, 14, 20, a.getId(), b.getId()); // 进行游戏对局
+        Game game = new Game(  // 进行游戏对局
+                13,
+                14,
+                20,
+                a.getId(),
+                botA,
+                b.getId(),
+                botB
+        );
         game.createMap(); // 生成地图
         if (users.get(a.getId()) != null) { // 防止其中一名玩家断开连接
             users.get(a.getId()).game = game;
@@ -119,11 +139,12 @@ public class WebSocketServer {
         }
     }
 
-    private void startMatching() {
+    private void startMatching(Integer botId) {
         System.out.println("start matching!");
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("user_id", this.user.getId().toString());
         data.add("rating", this.user.getRating().toString());
+        data.add("bot_id", botId.toString());
         restTemplate.postForObject(addPlayerUrl, data, String.class); // 向MatchingSystem发送请求
     }
 
@@ -135,12 +156,15 @@ public class WebSocketServer {
     }
 
     private void move(int direction) { // 蛇的移动
-
         // 判断当前连接的用户操控的是哪条蛇
         if (game.getPlayerA().getId().equals(user.getId())) {
-            game.setNextStepA(direction);
+            if (game.getPlayerA().getBotId().equals(-1)) { // 如果是-1，表示亲自出马，才会接收人的操作
+                game.setNextStepA(direction);
+            }
         } else if (game.getPlayerB().getId().equals(user.getId())) {
-            game.setNextStepB(direction);
+            if (game.getPlayerB().getBotId().equals(-1)) {
+                game.setNextStepB(direction);
+            }
         }
     }
 
@@ -152,7 +176,7 @@ public class WebSocketServer {
         JSONObject data = JSONObject.parseObject(message);
         String event = data.getString("event");
         if ("start-matching".equals(event)) {
-            startMatching();
+            startMatching(data.getInteger("bot_id"));
         } else if ("stop-matching".equals(event)) {
             stopMatching();
         } else if ("move".equals(event)) { // 接收到前端传来的蛇的移动的消息

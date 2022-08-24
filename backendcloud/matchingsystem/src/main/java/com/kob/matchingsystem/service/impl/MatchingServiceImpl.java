@@ -10,9 +10,9 @@ public class MatchingServiceImpl implements MatchingService {
     public final static MatchingPool matchingPool = new MatchingPool(); // 将匹配线程？进程加进来
 
     @Override
-    public String addPlayer(Integer userId, Integer rating) {
+    public String addPlayer(Integer userId, Integer rating, Integer botId) {
         System.out.println("add player: " + userId + " " + rating);
-        matchingPool.addPlayer(userId, rating); // 在匹配池里添加玩家
+        matchingPool.addPlayer(userId, rating, botId); // 在匹配池里添加玩家
         return "add player success!";
     }
 
