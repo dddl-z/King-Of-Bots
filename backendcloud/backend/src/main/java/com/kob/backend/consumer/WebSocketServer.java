@@ -32,7 +32,7 @@ public class WebSocketServer {
     public Game game = null;
     private final static String addPlayerUrl = "http://127.0.0.1:3001/player/add/";
     private final static String removePlayerUrl = "http://127.0.0.1:3001/player/remove/";
-    private static UserMapper userMapper;
+    public static UserMapper userMapper;
     @Autowired
     public void setUserMapper(UserMapper userMapper) { // 将UserMapper特殊注入
         WebSocketServer.userMapper = userMapper;
