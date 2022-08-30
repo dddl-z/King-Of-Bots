@@ -13,7 +13,7 @@ public class LoginController {
     @Autowired // 注入接口
     private LoginService loginService;
 
-    @PostMapping("/user/account/token/")
+    @PostMapping("/api/user/account/token/")
     public Map<String, String> getToken(@RequestParam Map<String, String> map) { // 从前端获取参数放到一个 map 里
         String username = map.get("username");
         String password = map.get("password");
