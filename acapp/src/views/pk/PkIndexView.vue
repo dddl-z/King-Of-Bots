@@ -40,8 +40,6 @@ export default {
             socket = new WebSocket(socketUrl);
 
             socket.onopen = () => {
-                console.log("connected!");
-
                 store.commit("updateSocket", socket);
             }
 
@@ -57,13 +55,11 @@ export default {
                     }, 200)
                     store.commit("updateGame", data.game);
                 } else if (data.event === "move") { // 广播移动信息，以求同步
-                    console.log(data);
                     const game = store.state.pk.gameObject;
                     const [snake0, snake1] = game.snakes;
                     snake0.set_direction(data.a_direction);
                     snake1.set_direction(data.b_direction);
                 } else if (data.event === "result") { // 广播游戏结果
-                    console.log(data);
                     const game = store.state.pk.gameObject;
                     const [snake0, snake1] = game.snakes;
 
@@ -75,10 +71,6 @@ export default {
                     }
                     store.commit("updateLoser", data.loser);
                 }
-            }
-
-            socket.onclose = () => {
-                console.log("disconnected!");
             }
         });
 
@@ -96,5 +88,12 @@ div.user-color {
     color: white;
     font-size: 30px;
     font-weight: 600;
+}
+
+div.user-color {
+    position: absolute;
+    bottom: 5vh;
+    width: 100%;
+    text-align: center;
 }
 </style>
