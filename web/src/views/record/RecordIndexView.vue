@@ -37,7 +37,7 @@
         <nav aria-label="..." style="float: right">
             <ul class="pagination">
                 <li class="page-item" @click="click_page(-2)">
-                    <span class="page-link">前一页</span>
+                    <a class="page-link" href="#">前一页</a>
                 </li>
                 <li :class="'page-item ' + page.is_active" v-for="page in pages" :key="page.number" @click="click_page(page.number)">
                     <a class="page-link" href="#">{{ page.number }}</a>
