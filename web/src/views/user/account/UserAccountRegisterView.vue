@@ -41,7 +41,7 @@ export default {
 
         const register = () => {
             $.ajax({
-                url: "https://app2883.acapp.acwing.com.cn/api/user/account/register/",
+                url: "https://www.kob.dddl.top/api/user/account/register/",
                 type: "post",
                 data: {
                     username: username.value,

@@ -21,7 +21,7 @@ export default {
     },
     setup() {
         const store = useStore();
-        const socketUrl = `wss://app2883.acapp.acwing.com.cn/websocket/${store.state.user.token}/`;
+        const socketUrl = `wss://www.kob.dddl.top/websocket/${store.state.user.token}/`;
 
         store.commit("updateLoser", "none");
         store.commit("updateIsRecord", false);

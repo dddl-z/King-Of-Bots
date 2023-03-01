@@ -78,7 +78,7 @@ export default {
 
         const acwing_login = () => {
             $.ajax({
-                url: "https://app2883.acapp.acwing.com.cn/api/user/account/acwing/web/apply_code/",
+                url: "https://www.kob.dddl.top/api/user/account/acwing/web/apply_code/",
                 type: "get",
                 success: resp => {
                     if (resp.result === "success") {

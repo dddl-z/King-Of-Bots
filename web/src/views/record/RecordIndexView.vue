@@ -98,7 +98,7 @@ export default {
         const pull_page = page => {
             current_page = page;
             $.ajax({
-                url: "https://app2883.acapp.acwing.com.cn/api/record/getlist/",
+                url: "https://www.kob.dddl.top/api/record/getlist/",
                 data: {
                     page,
                 },

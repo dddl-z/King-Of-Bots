@@ -83,7 +83,7 @@ export default {
         const pull_page = page => {
             current_page = page;
             $.ajax({
-                url: "https://app2883.acapp.acwing.com.cn/api/ranklist/getlist/",
+                url: "https://www.kob.dddl.top/api/ranklist/getlist/",
                 data: {
                     page,
                 },
